@@ -1,0 +1,52 @@
+int dp[501][501];
+    bool isPalindrome(string s, int i, int j)
+    {
+      if(i == j)
+        return true;
+      while(i < j)
+      {
+          if(s[i] != s[j])
+            return false;
+          
+          i++; j--;
+      }
+      return true;
+    }
+    int find(string s, int i, int j)
+    {
+      if(i >= j)
+        return 0;
+        
+      if(dp[i][j] != -1)
+        return dp[i][j];
+        
+      if(isPalindrome(s , i , j))
+        return 0;
+    
+    
+      int ans = INT_MAX;
+    
+      for(int k = i; k < j; k++)
+      {
+        int l , r;
+        if(dp[i][k] == -1)
+                l = find(s, i , k);
+            else
+                l = dp[i][k];
+            
+            if(dp[k+1][j] == -1)
+                r = find(s, k+1 , j);
+            else
+                r = dp[k+1][j];
+                
+        int temp = r + l + 1;
+        ans = min(ans , temp);
+      }
+      return dp[i][j] = ans;
+    }
+
+int Solution::minCut(string s) {
+        memset(dp, -1, sizeof dp);
+        int n = s.length();
+        return find(s, 0, n-1);
+}
