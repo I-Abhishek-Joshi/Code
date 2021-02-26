@@ -20,82 +20,71 @@ void oj()
   #endif
 }
 
-int n;
-vector<int>v[200005];
-int parent[100005], level[100005];
-int lca[100005][20];
-map<pair<int,int>, int >mp;
+int n, q;
+vector<int>v[500005];
+int lca[500005][30];
+int level[500005];
+int parent[500005];
 void dfs(int x, int par, int l)
 {
-  parent[x] = par;
   lca[x][0] = par;
   level[x] = l;
+  parent[x] = par;
+  for(int i = 1; i <= log2(n); i++)
+    lca[x][i] = lca[lca[x][i - 1]][i - 1];
 
   for(auto el : v[x])
   {
-    if(el != par)
+    if(el ^ par)
       dfs(el, x, l + 1);
   }
 }
-void doit()
+int find(int x, int y)
 {
-  for(int j = 1; j <= log2(n); j++)
-  {
-    for(int i = 1; i <= n; i++)
-    {
-      int mid = lca[i][j - 1];
-      if(mid != -1)
-        lca[i][j] = lca[mid][j - 1]; 
-    }
-  }
-}
-int find (int a, int b)
-{
-  if(level[a] > level[b])
-    swap(a, b);
+  if(level[x] > level[y])
+    swap(x, y);
 
-  int maxi = -1, mini = INT_MAX;
-  int d = level[b] - level[a];
-  while(d > 0)
+  int d = level[y] - level[x];
+  while(d)
   {
     int i = log2(d);
-    b = lca[b][i];
+    y = lca[y][i];
     d -= (1<<i);
   }
-  if(a == b)
-    return a;
+  if(x == y)
+    return x;
 
-  for(int i = log2(n); i>= 0; i--)
+  for(int i = log2(n); i >= 0; i--)
   {
-    if(lca[a][i] != -1 && lca[a][i] != lca[b][i])
+    if(lca[x][i] != -1 && lca[x][i] != lca[y][i])
     {
-      a = lca[a][i];
-      b = lca[b][i];
+      x = lca[x][i];
+      y = lca[y][i]; 
     }
   }
-  return parent[a];
+
+  return parent[x];
 }
+
 void solve()
 {
-  int n; cin>>n;
-  for(int i = 0; i < n - 1; i++)
+  cin>>n>>q;
+  for(int i = 0; i < n - 1; i ++)
   {
-    int x, y, z; cin>>x>>y>>z;
+    int x, y; cin>>x>>y;
     v[x].pb(y);
     v[y].pb(x);
-
-    mp[{x, y}] = z;
-    mp[{y, x}] = z;
   }
-  memset(lca, -1, sizeof lca);
-  dfs(1, -1, 0);
-  doit();
-  int x; cin>>x;
-  while(x --)
+
+  dfs(1, 0, 0);
+
+  while(q--)
   {
     int a, b; cin>>a>>b;
     cout<<find(a, b)<<endl;
   }
+
+
 }
 signed main()
 {
