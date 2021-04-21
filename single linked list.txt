@@ -1,0 +1,182 @@
+#include<bits/stdc++.h>
+#define pb push_back
+#define all(v) v.begin(),v.end()
+#define allr(v) v.rbegin(),v.rend()
+#define SORT(v) sort(all(v))
+#define int long long
+#define ff first
+#define ss second
+#define mod 1000000007
+#define endl "\n"
+
+using namespace std;
+
+void oj()
+{
+  ios::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+  #ifndef ONLINE_JUDGE  
+  freopen("input.txt", "r", stdin);
+  freopen("output.txt", "w", stdout);
+  #endif
+}
+struct node
+{
+  int data;
+  node * next;
+};
+node * head = NULL;
+
+node * getnode(int x)
+{
+  node * newnode = (node *)malloc(sizeof(node));
+  newnode -> data = x;
+  newnode -> next = NULL;
+
+  return newnode;
+}
+void print()
+{
+  node * temp = head;
+  while(temp)
+  {
+    cout<<temp -> data<<" ";
+    temp = temp -> next;
+  }
+  cout<<endl;
+}
+void delete_from_first()
+{
+  if(head == NULL)
+    return;
+  node * temp = head -> next;
+  free(head);
+  head = temp;
+}
+void delete_from_last()
+{
+  if(head == NULL)
+    return;
+  if(head -> next == NULL)
+  {
+    free(head);
+    return;
+  }
+  node * prev = head, *curr = head->next;
+  while(curr -> next != NULL)
+  {
+    prev = curr;
+    curr = curr -> next;
+  }
+
+  prev -> next = NULL;
+  free(curr);
+}
+void delete_from_x(int x)
+{
+  if(head == NULL)
+    return;
+
+  if(x == 1)
+  {
+    delete_from_first();
+    return;
+  }
+  if(head -> next == NULL)
+    return;
+
+  node *prev = head, *curr = head -> next;
+  int cnt = 2;
+  while(curr -> next != NULL && cnt < x)
+  {
+    prev = curr;
+    curr = curr->next;
+    cnt++;
+  }
+
+  if(cnt == x)
+  {
+    prev -> next = curr -> next;
+    free(curr);
+  }
+}
+void add_at_begining(int x)
+{
+
+  node * newnode = getnode(x);
+  if(head == NULL)
+  {
+    head = newnode;
+    return;
+  }
+  newnode -> next = head;
+  head = newnode;
+}
+
+void add_at_end(int x)
+{
+  node *newnode = getnode(x);
+  if(head == NULL)
+  {
+    head = newnode;
+    return;
+  }
+  node *curr = head;
+  while(curr -> next != NULL)
+    curr = curr -> next;
+
+  curr -> next = newnode;
+}
+void add_at_x(int pos, int x)
+{
+  node *newnode = getnode(x);
+  if(pos == 1)
+  {
+    add_at_begining(x);
+    return;
+  }
+  node *prev = head;
+  int cnt = 2;
+  while(prev != NULL && cnt < pos)
+  {
+    cnt++;
+    prev = prev -> next;
+  }
+
+  if(cnt == pos)
+  {
+    node *newnode = getnode(x);
+    node *curr = prev -> next;
+
+    newnode -> next = curr;
+    prev -> next = newnode;
+  }
+}
+void solve()
+{
+  int n; cin>>n;
+  node * temp = NULL;
+  for(int i = 0; i < n; i++)
+  {
+    int x; cin>>x;
+    node * newnode = getnode(x);
+    if(head == NULL)
+    {
+      head = newnode;
+      temp = newnode;
+    }
+    else
+    {
+      temp -> next = newnode;
+      temp = newnode;
+    }
+  }
+}
+signed main()
+{
+  oj(); 
+  // int t; cin>>t;
+  // while(t--)
+    solve();
+
+  return 0;
+}
